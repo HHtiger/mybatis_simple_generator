@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%highlight{%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %l %x - %msg%n}{FATAL=white, ERROR=red, WARN=Magenta, INFO=black, DEBUG=green, TRACE=blue}"/>
+        </Console>
+        <File name="file" fileName="logs/test.log" append="false">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </File>
+
+        <!--<JDBC name="Database" tableName="sys_log">-->
+            <!--<ConnectionFactory class="com.tiger.core.util.connection.ConnectionFactory" method="getDatabaseConnection" />-->
+            <!--<Column name="date_add" isEventTimestamp="true" />-->
+            <!--<Column name="level" pattern="%level" />-->
+            <!--<Column name="logger" pattern="%logger" />-->
+            <!--<Column name="message" pattern="%message" />-->
+            <!--<Column name="exception" pattern="%ex{full}" />-->
+        <!--</JDBC>-->
+
+        <!--<Socket name="ELK" host="localhost" port="4560" protocol="TCP">-->
+            <!--&lt;!&ndash; 输出格式  序列布局&ndash;&gt;-->
+            <!--<SerializedLayout/>-->
+            <!--<PatternLayout pattern="${PATTERN}" />-->
+        <!--</Socket>-->
+
+        <!--<NoSql name="Redis">-->
+            <!--<Redis host="localhost" />-->
+        <!--</NoSql>-->
+
+    </Appenders>
+
+    <Loggers>
+
+        <Root level="TRACE">
+            <AppenderRef ref="Console"/>
+            <!--<AppenderRef ref="Redis"/>-->
+            <!--<AppenderRef ref="ELK"/>-->
+            <AppenderRef ref="file"/>
+            <!--<AppenderRef ref="Database" />-->
+        </Root>
+    </Loggers>
+</Configuration>

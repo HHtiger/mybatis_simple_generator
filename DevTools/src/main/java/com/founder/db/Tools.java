@@ -38,15 +38,14 @@ public class Tools {
 
 	public static void main(String[] args) {
 		Tools tool=new Tools();
-		DbCon db=new DbCon(tool.dbUrl,tool.dbUser,tool.dbPwd);
 
-		List<Map<String, Object>> list=db.query(tool.tableName);
-		tool.doList(list);
-		tool.db2Java();
-		tool.db2SqlMap(list);
-		tool.createDao();
+//		List<Map<String, Object>> list=DbCon.queryColume(tool.tableName);
+//		tool.doList(list);
+//		tool.db2Java();
+//		tool.db2SqlMap(list);
+//		tool.createDao();
 	}
-	
+
 	/**
 	 * 
 	 * @Title: doList
