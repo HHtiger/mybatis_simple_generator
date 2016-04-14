@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.founder</groupId>
+  <artifactId>devtools</artifactId>
+  <version>1.0.1</version>
+  <packaging>jar</packaging>
+
+  <name>devtools</name>
+  <url>http://maven.apache.org</url>
+  
+  <repositories>
+		<!-- 公司的maven仓库 -->
+		<repository>
+			<id>founder</id>
+			<url>http://123.57.28.24:8081/nexus/content/groups/founder/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<!-- 指定maven plugin仓库 -->
+	<pluginRepositories>
+		<!-- 公司的maven plugin仓库 -->
+		<pluginRepository>
+			<id>founder</id>
+			<url>http://123.57.28.24:8081/nexus/content/groups/founder/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	<distributionManagement>
+		<repository>
+			<id>thirdparty</id>
+			<url>http://123.57.28.24:8081/nexus/content/repositories/thirdparty</url>
+		</repository>
+	</distributionManagement>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.oracle</groupId>
+    	<artifactId>ojdbc6</artifactId>
+    	<version>10</version>
+    </dependency>
+  </dependencies>
+</project>
