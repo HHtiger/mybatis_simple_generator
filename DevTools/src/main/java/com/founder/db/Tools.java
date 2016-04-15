@@ -1,5 +1,8 @@
 package com.founder.db;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -7,18 +10,17 @@ import java.util.List;
 import java.util.Map;
 
 public class Tools {
-	public String dbUrl="jdbc:oracle:thin:@172.29.213.202:1521:ORCL";
-	public String dbUser="manager";
-	public String dbPwd="manager";
-	
-	
-	public String tableName="ZSPZ_SYSMODEL";//数据库表名
-	public String entityName="ZspzSysModel";//生成的业务实体（java bean）名
-	public String paramName="zspzSysModel";//生成的业务实体（java bean）参数名
-	public String packageName="com.founder.zspz";//包名
+
+	private static Logger log = LoggerFactory.getLogger(Tools.class);
+
+	public String tableName="SYFW_FWZPB";//数据库表名
+	public String entityName="SYFW_FWZPB";//生成的业务实体（java bean）名
+	public String paramName="SYFW_FWZPB";//生成的业务实体（java bean）参数名
+	public String packageName="com.founder";//包名
 	public String filePath = "D:/db2file";//生成的文件目录
-	
-	
+
+	private DbCon conn = new DbCon();
+	private String pk = null;
 	
 	
 	private StringBuffer javaParam=new StringBuffer();
@@ -32,18 +34,26 @@ public class Tools {
 	
 	
 	public Tools(){
-		db2JavaMap=new HashMap<String, String>();
+		db2JavaMap=new HashMap<>();
 		db2JavaMap.put("VARCHAR2", "String");
+		db2JavaMap.put("DATE", "java.sql.Date");
+		db2JavaMap.put("NUMBER", "int");
+		db2JavaMap.put("BLOB", "byte[]");
+		pk = conn.getOracleKeyColumn(tableName);
+	}
+
+	public void create(){
+
+		List<Map<String, Object>> list=conn.queryColumes(tableName);
+		doList(list);
+		db2Java();
+		db2SqlMap(list);
+		createDao();
 	}
 
 	public static void main(String[] args) {
 		Tools tool=new Tools();
-
-//		List<Map<String, Object>> list=DbCon.queryColume(tool.tableName);
-//		tool.doList(list);
-//		tool.db2Java();
-//		tool.db2SqlMap(list);
-//		tool.createDao();
+		tool.create();
 	}
 
 	/**
@@ -61,29 +71,28 @@ public class Tools {
 		for(int i=0;i<list.size();i++){
 			map=list.get(i);
 			colName=map.get("COLUMN_NAME").toString().toLowerCase();//列名
-			
 			//java
-			doJava(colName,map.get("DATA_TYPE"),map.get("COMMENTS"));
-			
+			doJava(colName,(String)map.get("DATA_TYPE"),map.get("COMMENTS"));
+
 			//sql insert
 			doInsert(colName);
-			
+
 			doUpdate(colName);
-			
-			doQuery(colName);
-			
-			doQueryPage(colName);
+//
+//			doQuery(colName);
+//
+//			doQueryPage(colName);
 		}
-		
+
 	}
 	
-	private void doJava(String colName,Object key,Object comments){
+	private void doJava(String colName,String dataType,Object comments){
 		if(colName.startsWith("xt_")) return;
 		
 		String colName2=colName.substring(0, 1).toUpperCase()+colName.substring(1);
-		javaParam.append("\t@FieldDesc(\""+comments+"\") private "+db2JavaMap.get(key)+" "+colName+";\r\n");
-		javaMethod.append("\tpublic String get"+colName2+"(){\r\n\t\treturn "+colName+";\r\n\t}\r\n");
-		javaMethod.append("\tpublic void set"+colName2+"("+db2JavaMap.get(key)+" "+colName+") {\r\n\t\tthis."+colName+" = "+colName+";\r\n\t}\r\n");
+		javaParam.append("\t@FieldDesc(\""+comments+"\") private "+db2JavaMap.get(dataType)+" "+colName+";\r\n");
+		javaMethod.append("\tpublic "+db2JavaMap.get(dataType)+" get"+colName2+"(){\r\n\t\treturn "+colName+";\r\n\t}\r\n");
+		javaMethod.append("\tpublic void set"+colName2+"("+db2JavaMap.get(dataType)+" "+colName+") {\r\n\t\tthis."+colName+" = "+colName+";\r\n\t}\r\n");
 	}
 	
 	private void doInsert(String colName){
@@ -96,7 +105,7 @@ public class Tools {
 	
 	private void doUpdate(String colName){
 		if(colName.startsWith("xt_")) return;
-		if(colName.equals("id")) return;
+		if(colName.equals(pk.toLowerCase())) return;
 		updateParam.append("\t\t\t<isNotNull prepend=\",\" property=\""+colName+"\"><![CDATA[ "+colName.toUpperCase()+" = #"+colName+"#]]></isNotNull>\r\n");
 	}
 	
@@ -129,7 +138,7 @@ public class Tools {
 		content.append("import com.founder.framework.annotation.FieldDesc;\r\n");
 		content.append("import com.founder.framework.base.entity.BaseEntity;\r\n\r\n");
 		
-		content.append("@DBInfoAnnotation(tableName = \""+tableName+"\" , pk = \"id\")\r\n");
+		content.append("@DBInfoAnnotation(tableName = \""+tableName+"\" , pk = \""+pk+"\")\r\n");
 		content.append("public class "+entityName+" extends BaseEntity implements Serializable {\r\n");
 		content.append("\tprivate static final long serialVersionUID = 1L;\r\n\r\n");
 		
@@ -169,11 +178,11 @@ public class Tools {
 		
 		content.append("\t<!-- 新增 -->\r\n");
 		content.append("\t<insert id=\"save\" parameterClass=\""+ paramName +"\" >\r\n");
-		content.append("\t\t<![CDATA[ INSERT INTO " + tableName + " (ID]]>\r\n");
+		content.append("\t\t<![CDATA[ INSERT INTO " + tableName + " ("+pk+"]]>\r\n");
 		
 		content.append(this.insertParam);
 		
-		content.append("\t\t\t,<include refid=\"insertXtzd\" />\r\n\t\t<![CDATA[ )VALUES (#id# ]]>\r\n");
+		content.append("\t\t\t,<include refid=\"insertXtzd\" />\r\n\t\t<![CDATA[ )VALUES (#"+pk.toLowerCase()+"# ]]>\r\n");
 		
 		content.append(this.insertValue);
 		
@@ -195,7 +204,7 @@ public class Tools {
 		
 		content.append("\t\t\t,<include refid=\"updateXtzd\"/>\r\n");
 		content.append("\t\t</dynamic>\r\n");
-		content.append("\t\t<![CDATA[ WHERE ID = #id#]]>\r\n");
+		content.append("\t\t<![CDATA[ WHERE "+pk+" = #"+pk.toLowerCase()+"#]]>\r\n");
 		content.append("\t</update>\r\n\r\n");
 	}
 	
@@ -208,7 +217,7 @@ public class Tools {
 		content.append("\t<update id=\"delete\" parameterClass=\"" + paramName + "\">\r\n");
 		content.append("\t\t<![CDATA[ UPDATE " + tableName+ " SET]]>\r\n");
 		content.append("\t\t\t<include refid=\"deleteXtzd\" />\r\n");
-		content.append("\t\t<![CDATA[WHERE ID = #id# ]]>\r\n");
+		content.append("\t\t<![CDATA[ WHERE \"+pk+\" = #"+pk.toLowerCase()+"#]]>\r\n");
 		content.append("\t</update>\r\n\r\n");
 	}
 	
@@ -224,7 +233,7 @@ public class Tools {
 	public void appendQuery(StringBuffer content){
 		content.append("\t<!-- 通过  ID 查询单条数据 -->\r\n");
 		content.append("\t<select id=\"queryById\" parameterClass=\"String\" resultClass=\""+ paramName +"\">\r\n");
-		content.append("\t\t<![CDATA[ SELECT * FROM "+ tableName +" WHERE XT_ZXBZ='0' AND ID = #id# AND ROWNUM = 1]]>\r\n");
+		content.append("\t\t<![CDATA[ SELECT * FROM "+ tableName +" WHERE XT_ZXBZ='0' AND "+pk+" = #"+pk.toLowerCase()+"# AND ROWNUM = 1]]>\r\n");
 		content.append("\t</select>\r\n\r\n");
 		
 		content.append("\t<!-- 通过  entity 查询列表 -->\r\n");
@@ -295,8 +304,8 @@ public class Tools {
 		
 		//queryById
 		content.append("\t/**\r\n\t * 通过主键ID查询单个业务实体对象\r\n\t */\r\n");
-		content.append("\tpublic "+entityName+" queryById(String id) {\r\n");
-		content.append("\t\treturn ("+entityName+")super.queryForObject(\""+entityName+".queryById\",id);\r\n");
+		content.append("\tpublic "+entityName+" queryById(String "+pk.toLowerCase()+") {\r\n");
+		content.append("\t\treturn ("+entityName+")super.queryForObject(\""+entityName+".queryById\","+pk.toLowerCase()+");\r\n");
 		content.append("\t}\r\n\r\n");
 		
 		//queryByEntity

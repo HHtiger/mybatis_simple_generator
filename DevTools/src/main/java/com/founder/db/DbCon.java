@@ -17,7 +17,7 @@ public class DbCon {
 
 	private static Connection con = getCon();
 
-	public static Connection getCon(){
+	private static Connection getCon(){
 		try{
 			if (con==null) {
 				con = ConnectionFactory.getDatabaseConnection();
@@ -26,7 +26,7 @@ public class DbCon {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return null;
+		return con;
 	}
 
 	public List<Map<String, Object>> exeute(String sql){
@@ -51,7 +51,7 @@ public class DbCon {
 		}
 	}
 
-	public String getKeyColumn(String tableName){
+	public String getOracleKeyColumn(String tableName){
 		String sql = "SELECT " +
 				" cu.column_name " +
 				" FROM " +
@@ -64,11 +64,12 @@ public class DbCon {
 		sql = SQLUtils.formatOracle(sql, SQLUtils.DEFAULT_FORMAT_OPTION);
 		log.debug("\n{}",sql);
 		List<Map<String, Object>> list = exeute(sql);
-		log.debug("\n{}",list.get(0).get("COLUMN_NAME"));
-		return null;
+		String pk = list.get(0).get("COLUMN_NAME").toString();
+		log.debug("\n{}",pk);
+		return pk;
 	}
 	
-	public List<Map<String, Object>> queryColume(String TableName){
+	public List<Map<String, Object>> queryColumes(String TableName){
 		String sql="select a.COLUMN_NAME ,a.DATA_TYPE,b.COMMENTS from user_tab_columns a left join user_col_comments b on( "
 				+ "b.TABLE_NAME=a.TABLE_NAME and b.COLUMN_NAME=a.COLUMN_NAME) where a.TABLE_NAME='"+TableName+"'";
 		try{
@@ -76,15 +77,22 @@ public class DbCon {
 			ResultSet rs = stmt.executeQuery(sql) ;
 			List<Map<String, Object>> list = exeute(sql);
 			stmt.close();
-			con.close();
 			return list;
 
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return null;
+	}
+
+	public void closeConn(){
+		try {
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
