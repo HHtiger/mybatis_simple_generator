@@ -19,20 +19,28 @@ public class Tools {
     public String entityName = null;//生成的业务实体（java bean）名
     public String paramName = null;//生成的业务实体（java bean）参数名
     public String parentPackageName = "com.founder";//包名:model,sqlmap及dao的上级包名
-    public String filePath = "E:/tiger/tiegrWs/jwzh-syfw/web_base/src/main/java";//生成的文件目录
-//    public String filePath = "d:/db2file/";//生成的文件目录
+//    public String filePath = "E:/tiger/tiegrWs/jwzh-syfw/web_base/src/main/java";//生成的文件目录
+    public String filePath = "I:/MyGit/jwzh-syfw/web_base/src/main/java";//生成的文件目录
 
-    private DbCon conn = new DbCon();
     public String pk = null;
 
-    public Map<String, String> db2JavaMap;
+    public static Map<String, String> db2JavaMap;
 
     private static Configuration configuration = null;
     private static Map<String, Template> allTemplates = null;
     Map<String,Object> ftlmap = new HashMap<>();
 
     static {
-        configuration = new Configuration();
+
+        db2JavaMap = new HashMap<>();
+        db2JavaMap.put("VARCHAR2", "String");
+        db2JavaMap.put("varchar", "String");
+        db2JavaMap.put("int", "int");
+        db2JavaMap.put("DATE", "java.sql.Date");
+        db2JavaMap.put("NUMBER", "int");
+        db2JavaMap.put("BLOB", "byte[]");
+
+        configuration = new Configuration(Configuration.VERSION_2_3_23);
         configuration.setDefaultEncoding("utf-8");
         try {
             configuration.setDirectoryForTemplateLoading(new File(ClassPathUtil.getClassesPath(Tools.class) + "/ftl/"));
@@ -42,6 +50,7 @@ public class Tools {
         allTemplates = new HashMap<>();    // Java 7 钻石语法
         try {
             allTemplates.put("service", configuration.getTemplate("service.ftl"));
+            allTemplates.put("serviceImpl", configuration.getTemplate("serviceImpl.ftl"));
             allTemplates.put("dao", configuration.getTemplate("dao.ftl"));
             allTemplates.put("model", configuration.getTemplate("model.ftl"));
             allTemplates.put("sqlmap", configuration.getTemplate("sqlmap.ftl"));
@@ -51,27 +60,24 @@ public class Tools {
         }
     }
 
-    public Tools() {
-
-    }
-
     public void create(String name) {
         tableName = name;
+        String[] names = name.split("_");
+        name = "";
+        for(String n:names){
+            n = toUpperCaseFirstOne(n.toLowerCase());
+            name += n;
+        }
         entityName = name;
         paramName = name;
-        pk = conn.getOracleKeyColumn(tableName);
-        db2JavaMap = new HashMap<>();
-        db2JavaMap.put("VARCHAR2", "String");
-        db2JavaMap.put("DATE", "java.sql.Date");
-        db2JavaMap.put("NUMBER", "int");
-        db2JavaMap.put("BLOB", "byte[]");
+        pk = DbUtil.INSTANCE.getOracleKeyColumn(tableName);
 
         ftlmap.put("parentPackageName",parentPackageName);
         ftlmap.put("entityName",entityName);
         ftlmap.put("tableName",tableName);
         ftlmap.put("paramName",paramName);
         ftlmap.put("pk",pk);
-        List<Map<String, Object>> columes = new DbCon().queryColumes(tableName);
+        List<Map<String, Object>> columes = DbUtil.INSTANCE.queryColumes(tableName);
         ftlmap.put("columus",columes);
         ftlmap.put("db2JavaMap",db2JavaMap);
     }
@@ -93,21 +99,30 @@ public class Tools {
     }
 
     public String createFile(Map<?, ?> dataMap, String packageName) {
-        String fileName = "";
+
+        String path = this.filePath + "/" + parentPackageName.replace(".", "/") + "/" + packageName;
+
+        String fileName;
+
         if(packageName.equals("sqlmap")){
             fileName = entityName  + ".xml";
         }else if(packageName.equals("model")){
             fileName = entityName + ".java";
+        }else if(packageName.equals("serviceImpl")){
+            fileName = entityName + toUpperCaseFirstOne(packageName) + ".java";
+            path = path.replace("serviceImpl","service/impl");
         }else{
             fileName = entityName + toUpperCaseFirstOne(packageName) + ".java";
         }
-        String path = this.filePath + "/" + parentPackageName.replace(".", "/") + "/" + packageName;
+
         path = path.replace("//", "/").trim();
+
         File dir = new File(path);
         log.info(path);
         if (!dir.exists()) {
             dir.mkdirs();
         }
+
         File file = new File(path + "/" + fileName);
 
         Template t = allTemplates.get(packageName);
@@ -130,6 +145,10 @@ public class Tools {
 
     public void doService () {
         createFile(ftlmap,"service");
+    }
+
+    public void doServiceImpl () {
+        createFile(ftlmap,"serviceImpl");
     }
 
     public void doDao () {

@@ -9,19 +9,21 @@ package com.founder.util.connection;
  */
 
 import com.alibaba.druid.pool.DruidDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public class ConnectionFactory {
-    private static interface Singleton {
-        final ConnectionFactory INSTANCE = new ConnectionFactory();
-    }
+public enum ConnectionFactory {
 
-    private final DruidDataSource dataSource ;
+    INSTANCE;
+    private Logger log = LoggerFactory.getLogger(ConnectionFactory.class);
 
-    private ConnectionFactory(){
+    private DruidDataSource dataSource ;
+
+    ConnectionFactory(){
         //process为文件名，切记不要加 .properties， URL是文件里的键名
         ResourceBundle bundle = ResourceBundle.getBundle("resources");
         String jdbc_driver = bundle.getString("jdbc.driverClassName");
@@ -31,6 +33,7 @@ public class ConnectionFactory {
         String jdbc_test = bundle.getString("jdbc.test");
 
         dataSource = new DruidDataSource();
+        log.debug("init..");
         dataSource.setDriverClassName(jdbc_driver);
         dataSource.setUrl(jdbc_url);
         dataSource.setUsername(jdbc_username);
@@ -39,7 +42,20 @@ public class ConnectionFactory {
         dataSource.setValidationQuery(jdbc_test);
     }
 
-    public static Connection getDatabaseConnection() throws SQLException {
-        return Singleton.INSTANCE.dataSource.getConnection();
+    public DbType getDriverName(){
+        String driverName = dataSource.getDriverClassName().toLowerCase();
+        log.debug("getDriverName:{}",driverName);
+        if(driverName.contains("mysql")){
+            return DbType.Mysql;
+        }else if(driverName.contains("oracle")){
+            return DbType.Oracle;
+        }else{
+            return DbType.Undefined;
+        }
+    }
+
+    public Connection getDatabaseConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 }
+

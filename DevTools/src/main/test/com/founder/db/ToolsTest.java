@@ -1,6 +1,8 @@
 package com.founder.db;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Package: com.founder.db
@@ -11,26 +13,20 @@ import org.junit.Test;
  * Version: 1.0
  */
 public class ToolsTest {
+    private static Logger log = LoggerFactory.getLogger(ToolsTest.class);
 
     @Test
     public void testCreateService() throws Exception {
         Tools tool=new Tools();
         String[] tablenames = {
-                "SYFW_CHENGZUXXB",
-                "SYFW_CHUZUXXB",
-                "SYFW_FWGDB",
-                "SYFW_FWGLXXB",
-                "SYFW_FWJBXXB",
-                "SYFW_FWKZXX_CQRXXB",
-                "SYFW_FWRCJC_FJB",
-                "SYFW_FWRCJCB",
-                "SYFW_FWZPB"
+                "SYRK_USER",
         };
         for(String tablename : tablenames){
             tool.create(tablename);
             tool.doModel();
             tool.doDao();
             tool.doService();
+            tool.doServiceImpl();
             tool.doSqlmap();
         }
     }

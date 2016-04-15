@@ -28,22 +28,14 @@ public class DbConTest extends TestCase {
     }
 
     @Test
-    public void testGetCon() throws Exception {
-        DbCon d = new DbCon();
-
-    }
-
-    @Test
     public void testGetKeyColumn() throws Exception {
-        DbCon d = new DbCon();
-        String pk = d.getOracleKeyColumn("SYFW_FWZPB");
+        String pk = DbUtil.INSTANCE.getOracleKeyColumn("SYFW_FWZPB");
         assertEquals("ZPID",pk);
     }
 
     @Test
     public void testQuery() throws Exception {
-        DbCon d = new DbCon();
-        List<Map<String,Object>> list = d.queryColumes("SYFW_FWZPB");
+        List<Map<String,Object>> list = DbUtil.INSTANCE.queryColumes("SYFW_FWZPB");
         log.debug("");
     }
 }

@@ -11,7 +11,7 @@ public class ${entityName} extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	<#list columus as colume>
-	@FieldDesc("${colume["COMMENTS"]}") private ${db2JavaMap[colume["DATA_TYPE"]]} ${colume["COLUMN_NAME"]?lower_case};
+	@FieldDesc("${colume["COMMENTS"]!''}") private ${db2JavaMap[colume["DATA_TYPE"]]} ${colume["COLUMN_NAME"]?lower_case};
     public ${db2JavaMap[colume["DATA_TYPE"]]} get${colume["COLUMN_NAME"]?lower_case?cap_first}(){
     return ${colume["COLUMN_NAME"]?lower_case};
     }
