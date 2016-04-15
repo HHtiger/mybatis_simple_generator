@@ -147,7 +147,7 @@ public class Tools {
 		content.append(javaMethod);
 		
 		content.append("}");
-		this.writeFile(this.entityName+".java", content.toString());
+		this.writeFile(this.packageName+".model",this.entityName+".java", content.toString());
 	}
 	
 	public void db2SqlMap(List<Map<String, Object>> list){
@@ -159,7 +159,7 @@ public class Tools {
 		appendQuery(content);
 		appendQueryPage(content);
 		content.append("</sqlMap>");
-		this.writeFile(this.entityName+".xml", content.toString());
+		this.writeFile(this.packageName+".sqlmap",this.entityName+".xml", content.toString());
 	}
 	
 	
@@ -325,7 +325,7 @@ public class Tools {
 		
 		content.append("}\r\n");
 		
-		this.writeFile(this.entityName+"Dao.java", content.toString());
+		this.writeFile(this.packageName+".dao",this.entityName+"Dao.java", content.toString());
 	}
 	
 	/**
@@ -337,11 +337,15 @@ public class Tools {
 	 * @return void    返回类型
 	 * @throw
 	 */
-	public void writeFile(String fileName,String content){
+	public void writeFile(String packageName,String fileName,String content){
 		try{
-			File file=new File(this.filePath+"/"+fileName);
-			if(!file.exists())
-				file.createNewFile();
+			String path = this.filePath+"/"+packageName.replace(".","/");
+			File dir = new File(path);
+			dir.mkdirs();
+			log.info(path);
+			File file=new File(path+"/"+fileName);
+//			if(!file.exists())
+			file.createNewFile();
 			FileOutputStream fileOut=new FileOutputStream(file);
 			fileOut.write(content.getBytes("UTF-8"));
 			fileOut.flush();

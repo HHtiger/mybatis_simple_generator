@@ -62,10 +62,10 @@ public class DbCon {
 				" AND au.constraint_type = 'P'" +
 				" AND au.table_name = 'SYFW_FWZPB';";
 		sql = SQLUtils.formatOracle(sql, SQLUtils.DEFAULT_FORMAT_OPTION);
-		log.debug("\n{}",sql);
+//		log.debug("\n{}",sql);
 		List<Map<String, Object>> list = exeute(sql);
 		String pk = list.get(0).get("COLUMN_NAME").toString();
-		log.debug("\n{}",pk);
+//		log.debug("\n{}",pk);
 		return pk;
 	}
 	
