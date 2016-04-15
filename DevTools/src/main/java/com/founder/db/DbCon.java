@@ -60,7 +60,7 @@ public class DbCon {
 				" WHERE" +
 				" cu.constraint_name = au.constraint_name" +
 				" AND au.constraint_type = 'P'" +
-				" AND au.table_name = 'SYFW_FWZPB';";
+				" AND au.table_name = '" + tableName + "';";
 		sql = SQLUtils.formatOracle(sql, SQLUtils.DEFAULT_FORMAT_OPTION);
 //		log.debug("\n{}",sql);
 		List<Map<String, Object>> list = exeute(sql);
