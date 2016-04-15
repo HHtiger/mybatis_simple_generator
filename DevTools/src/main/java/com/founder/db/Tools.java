@@ -13,11 +13,11 @@ public class Tools {
 
 	private static Logger log = LoggerFactory.getLogger(Tools.class);
 
-	public String tableName="SYFW_FWZPB";//数据库表名
-	public String entityName="SYFW_FWZPB";//生成的业务实体（java bean）名
-	public String paramName="SYFW_FWZPB";//生成的业务实体（java bean）参数名
+	public String tableName=null;//数据库表名
+	public String entityName=null;//生成的业务实体（java bean）名
+	public String paramName=null;//生成的业务实体（java bean）参数名
 	public String packageName="com.founder";//包名:model,sqlmap及dao的上级包名
-	public String filePath = "D:/db2file";//生成的文件目录
+	public String filePath = "E:/tiger/tiegrWs/jwzh-syfw/web_base/src/main/java";//生成的文件目录
 
 	private DbCon conn = new DbCon();
 	private String pk = null;
@@ -39,21 +39,43 @@ public class Tools {
 		db2JavaMap.put("DATE", "java.sql.Date");
 		db2JavaMap.put("NUMBER", "int");
 		db2JavaMap.put("BLOB", "byte[]");
-		pk = conn.getOracleKeyColumn(tableName);
 	}
 
-	public void create(){
-
+	public void create(String name){
+		tableName=name;
+		entityName=name;
+		paramName=name;
+		pk = conn.getOracleKeyColumn(tableName);
 		List<Map<String, Object>> list=conn.queryColumes(tableName);
 		doList(list);
 		db2Java();
 		db2SqlMap(list);
 		createDao();
+		javaParam.setLength(0);
+		javaMethod.setLength(0);
+		insertParam.setLength(0);
+		insertValue.setLength(0);
+		updateParam.setLength(0);
+		queryParam.setLength(0);
+		queryPageParam.setLength(0);
 	}
 
 	public static void main(String[] args) {
 		Tools tool=new Tools();
-		tool.create();
+		String[] tablenames = {
+				"SYFW_CHENGZUXXB",
+				"SYFW_CHUZUXXB",
+				"SYFW_FWGDB",
+				"SYFW_FWGLXXB",
+				"SYFW_FWJBXXB",
+				"SYFW_FWKZXX_CQRXXB",
+				"SYFW_FWRCJC_FJB",
+				"SYFW_FWRCJCB",
+				"SYFW_FWZPB"
+		};
+		for(String tablename : tablenames){
+			tool.create(tablename);
+		}
 	}
 
 	/**
@@ -97,7 +119,7 @@ public class Tools {
 	
 	private void doInsert(String colName){
 		if(colName.startsWith("xt_")) return;
-		if(colName.equals("id")) return;
+		if(colName.equals(pk.toLowerCase())) return;
 		
 		insertParam.append("\t\t\t<isNotEmpty prepend=\",\" property=\""+colName+"\"><![CDATA[ "+colName.toUpperCase()+"]]></isNotEmpty>\r\n");
 		insertValue.append("\t\t\t<isNotEmpty prepend=\",\" property=\""+colName+"\"><![CDATA[#"+colName+"#]]></isNotEmpty>\r\n");
@@ -341,8 +363,10 @@ public class Tools {
 		try{
 			String path = this.filePath+"/"+packageName.replace(".","/");
 			File dir = new File(path);
-			dir.mkdirs();
 			log.info(path);
+			if(!dir.exists()) {
+				dir.mkdirs();
+			}
 			File file=new File(path+"/"+fileName);
 //			if(!file.exists())
 			file.createNewFile();
