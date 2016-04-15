@@ -72,6 +72,9 @@ public class DbCon {
 	public List<Map<String, Object>> queryColumes(String TableName){
 		String sql="select a.COLUMN_NAME ,a.DATA_TYPE,b.COMMENTS from user_tab_columns a left join user_col_comments b on( "
 				+ "b.TABLE_NAME=a.TABLE_NAME and b.COLUMN_NAME=a.COLUMN_NAME) where a.TABLE_NAME='"+TableName+"'";
+
+		sql = SQLUtils.formatOracle(sql, SQLUtils.DEFAULT_FORMAT_OPTION);
+		log.debug("\n{}",sql);
 		try{
 			Statement stmt = con.createStatement() ;
 			ResultSet rs = stmt.executeQuery(sql) ;

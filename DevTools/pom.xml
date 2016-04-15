@@ -53,6 +53,7 @@
         <!-- log4j日志文件管理包版本 end-->
         <druid.version>1.0.18</druid.version>
         <junit.version>4.12</junit.version>
+        <freemarker.version>2.3.23</freemarker.version>
     </properties>
 
     <dependencies>
@@ -111,5 +112,12 @@
             <artifactId>druid</artifactId>
             <version>${druid.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+        </dependency>
+
     </dependencies>
 </project>

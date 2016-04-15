@@ -2,9 +2,6 @@ package com.founder.db;
 
 import org.junit.Test;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Package: com.founder.db
  * ClassName: ToolsTest
@@ -16,55 +13,25 @@ import java.util.Map;
 public class ToolsTest {
 
     @Test
-    public void testDoList() throws Exception {
+    public void testCreateService() throws Exception {
         Tools tool=new Tools();
-        DbCon conn = new DbCon();
-        List<Map<String, Object>> list = conn.queryColumes("SYFW_FWZPB");
-        tool.doList(list);
-    }
-
-    @Test
-    public void testDb2Java() throws Exception {
-
-    }
-
-    @Test
-    public void testDb2SqlMap() throws Exception {
-
-    }
-
-    @Test
-    public void testAppendInsert() throws Exception {
-
-    }
-
-    @Test
-    public void testAppendUpdate() throws Exception {
-
-    }
-
-    @Test
-    public void testAppendDel() throws Exception {
-
-    }
-
-    @Test
-    public void testAppendQuery() throws Exception {
-
-    }
-
-    @Test
-    public void testAppendQueryPage() throws Exception {
-
-    }
-
-    @Test
-    public void testCreateDao() throws Exception {
-
-    }
-
-    @Test
-    public void testWriteFile() throws Exception {
-
+        String[] tablenames = {
+                "SYFW_CHENGZUXXB",
+                "SYFW_CHUZUXXB",
+                "SYFW_FWGDB",
+                "SYFW_FWGLXXB",
+                "SYFW_FWJBXXB",
+                "SYFW_FWKZXX_CQRXXB",
+                "SYFW_FWRCJC_FJB",
+                "SYFW_FWRCJCB",
+                "SYFW_FWZPB"
+        };
+        for(String tablename : tablenames){
+            tool.create(tablename);
+            tool.doModel();
+            tool.doDao();
+            tool.doService();
+            tool.doSqlmap();
+        }
     }
 }
