@@ -16,7 +16,7 @@ public class Tools {
 	public String tableName="SYFW_FWZPB";//数据库表名
 	public String entityName="SYFW_FWZPB";//生成的业务实体（java bean）名
 	public String paramName="SYFW_FWZPB";//生成的业务实体（java bean）参数名
-	public String packageName="com.founder";//包名
+	public String packageName="com.founder";//包名:model,sqlmap及dao的上级包名
 	public String filePath = "D:/db2file";//生成的文件目录
 
 	private DbCon conn = new DbCon();
