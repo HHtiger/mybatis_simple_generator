@@ -100,10 +100,10 @@ public class Tools {
 			doInsert(colName);
 
 			doUpdate(colName);
-//
-//			doQuery(colName);
-//
-//			doQueryPage(colName);
+
+			doQuery(colName);
+
+			doQueryPage(colName);
 		}
 
 	}
