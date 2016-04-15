@@ -15,7 +15,7 @@ public class ${entityName} extends BaseEntity implements Serializable {
     public ${db2JavaMap[colume["DATA_TYPE"]]} get${colume["COLUMN_NAME"]?lower_case?cap_first}(){
     return ${colume["COLUMN_NAME"]?lower_case};
     }
-    public void set${colume["COLUMN_NAME"]?lower_case?cap_first}(String ${colume["COLUMN_NAME"]?lower_case}) {
+    public void set${colume["COLUMN_NAME"]?lower_case?cap_first}(${db2JavaMap[colume["DATA_TYPE"]]} ${colume["COLUMN_NAME"]?lower_case}) {
     this.${colume["COLUMN_NAME"]?lower_case} = ${colume["COLUMN_NAME"]?lower_case};
     }
 	</#list>
