@@ -17,9 +17,19 @@ public class ToolsTest {
 
     @Test
     public void testCreateService() throws Exception {
-        Tools tool=new Tools();
+        String filePath = "E:/tiger/tiegrWs/jwzh-syfw/web_base/src/main/java";//生成的文件目录
+        String parentPackageName = "com.founder";//包名:model,sqlmap及dao的上级包名
+        Tools tool=new Tools(parentPackageName,filePath);
         String[] tablenames = {
-                "SYRK_USER",
+                "SYFW_CHENGZUXXB",
+                "SYFW_CHUZUXXB",
+                "SYFW_FWGDB",
+                "SYFW_FWGLXXB",
+                "SYFW_FWJBXXB",
+                "SYFW_FWKZXX_CQRXXB",
+                "SYFW_FWRCJC_FJB",
+                "SYFW_FWRCJCB",
+                "SYFW_FWZPB"
         };
         for(String tablename : tablenames){
             tool.create(tablename);

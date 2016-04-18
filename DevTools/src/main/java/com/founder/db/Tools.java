@@ -15,16 +15,16 @@ public class Tools {
 
     private static Logger log = LoggerFactory.getLogger(Tools.class);
 
-    public String tableName = null;//数据库表名
-    public String entityName = null;//生成的业务实体（java bean）名
-    public String paramName = null;//生成的业务实体（java bean）参数名
-    public String parentPackageName = "com.founder";//包名:model,sqlmap及dao的上级包名
-//    public String filePath = "E:/tiger/tiegrWs/jwzh-syfw/web_base/src/main/java";//生成的文件目录
-    public String filePath = "I:/MyGit/jwzh-syfw/web_base/src/main/java";//生成的文件目录
+    private String tableName = null;//数据库表名
+    private String entityName = null;//生成的业务实体（java bean）名
+    private String paramName = null;//生成的业务实体（java bean）参数名
+    private String parentPackageName = null;//"com.founder";//包名:model,sqlmap及dao的上级包名
+    private String filePath = null;//"E:/tiger/tiegrWs/jwzh-syfw/web_base/src/main/java";//生成的文件目录
+//    public String filePath = "I:/MyGit/jwzh-syfw/web_base/src/main/java";//生成的文件目录
 
-    public String pk = null;
+    private String pk = null;
 
-    public static Map<String, String> db2JavaMap;
+    public static Map<String, String> db2JavaMap;//映射为public可配置
 
     private static Configuration configuration = null;
     private static Map<String, Template> allTemplates = null;
@@ -60,6 +60,11 @@ public class Tools {
         }
     }
 
+    public Tools(String parentPackageName, String filePath) {
+        this.filePath = filePath;
+        this.parentPackageName = parentPackageName;
+    }
+
     public void create(String name) {
         tableName = name;
         String[] names = name.split("_");
@@ -83,7 +88,7 @@ public class Tools {
     }
 
     //首字母转小写
-    public static String toLowerCaseFirstOne(String s) {
+    private static String toLowerCaseFirstOne(String s) {
         if (Character.isLowerCase(s.charAt(0)))
             return s;
         else
@@ -91,14 +96,14 @@ public class Tools {
     }
 
     //首字母转大写
-    public static String toUpperCaseFirstOne(String s) {
+    private static String toUpperCaseFirstOne(String s) {
         if (Character.isUpperCase(s.charAt(0)))
             return s;
         else
             return (new StringBuilder()).append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).toString();
     }
 
-    public String createFile(Map<?, ?> dataMap, String packageName) {
+    private String createFile(Map<?, ?> dataMap, String packageName) {
 
         String path = this.filePath + "/" + parentPackageName.replace(".", "/") + "/" + packageName;
 
