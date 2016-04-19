@@ -29,7 +29,8 @@ public class ToolsTest {
                 "SYFW_FWKZXX_CQRXXB",
                 "SYFW_FWRCJC_FJB",
                 "SYFW_FWRCJCB",
-                "SYFW_FWZPB"
+                "SYFW_FWZPB",
+                "SYFW_FWSCB"
         };
         for(String tablename : tablenames){
             tool.create(tablename);
