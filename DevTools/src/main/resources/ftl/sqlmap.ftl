@@ -7,7 +7,7 @@
     <insert id="save" parameterClass="${paramName}" >
         <![CDATA[ INSERT INTO ${tableName} (${pk}]]>
     <#list columus as colume>
-        <isNotEmpty prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ ${colume["COLUMN_NAME"]}]]></isNotEmpty>
+        <isNotEmpty prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ ${colume["COLUMN_NAME"]?lower_case}}]]></isNotEmpty>
     </#list>
         ,<include refid="insertXtzd" />
         <![CDATA[ )VALUES (#${pk}# ]]>
