@@ -10,7 +10,7 @@
         <isNotEmpty prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ ${colume["COLUMN_NAME"]}]]></isNotEmpty>
     </#list>
         ,<include refid="insertXtzd" />
-        <![CDATA[ )VALUES (#chengzu_ryid# ]]>
+        <![CDATA[ )VALUES (#${pk}# ]]>
     <#list columus as colume>
         <isNotEmpty prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ #${colume["COLUMN_NAME"]?lower_case}#]]></isNotEmpty>
     </#list>
