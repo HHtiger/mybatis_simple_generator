@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-@Service("${entityName}Service")
+@Service("${entityName?uncap_first}Service")
 @Transactional
 public class ${entityName}ServiceImpl extends BaseService implements ${entityName}Service{
 

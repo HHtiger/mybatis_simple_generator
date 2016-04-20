@@ -7,12 +7,16 @@
     <insert id="save" parameterClass="${paramName}" >
         <![CDATA[ INSERT INTO ${tableName} (${pk}]]>
     <#list columus as colume>
-        <isNotEmpty prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ ${colume["COLUMN_NAME"]?lower_case}}]]></isNotEmpty>
+        <#if colume["COLUMN_NAME"]?lower_case != pk?lower_case&&!colume["COLUMN_NAME"]?lower_case?starts_with("xt_") >
+            <isNotEmpty prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ ${colume["COLUMN_NAME"]} ]]></isNotEmpty>
+        </#if>
     </#list>
         ,<include refid="insertXtzd" />
         <![CDATA[ )VALUES (#${pk?lower_case}# ]]>
     <#list columus as colume>
-        <isNotEmpty prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ #${colume["COLUMN_NAME"]?lower_case}#]]></isNotEmpty>
+        <#if colume["COLUMN_NAME"]?lower_case != pk?lower_case&&!colume["COLUMN_NAME"]?lower_case?starts_with("xt_") >
+            <isNotEmpty prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ #${colume["COLUMN_NAME"]?lower_case}# ]]></isNotEmpty>
+        </#if>
     </#list>
         ,<include refid="insertXtzdVal" />
         )
@@ -23,7 +27,9 @@
         <![CDATA[ UPDATE ${tableName}]]>
         <dynamic prepend="SET">
         <#list columus as colume>
-            <isNotNull prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ ${colume["COLUMN_NAME"]} = #${colume["COLUMN_NAME"]?lower_case}#]]></isNotNull>
+            <#if colume["COLUMN_NAME"]?lower_case != pk?lower_case&&!colume["COLUMN_NAME"]?lower_case?starts_with("xt_") >
+                <isNotNull prepend="," property="${colume["COLUMN_NAME"]?lower_case}"><![CDATA[ ${colume["COLUMN_NAME"]} = #${colume["COLUMN_NAME"]?lower_case}#]]></isNotNull>
+            </#if>
         </#list>
             ,<include refid="updateXtzd"/>
         </dynamic>
@@ -46,7 +52,9 @@
     <select id="queryByEntity" parameterClass="${paramName}" resultClass="${paramName}">
         <![CDATA[ SELECT * FROM ${tableName} WHERE XT_ZXBZ='0' ]]>
     <#list columus as colume>
-        <isNotEmpty prepend="AND" property="${colume["COLUMN_NAME"]?lower_case}"> ${colume["COLUMN_NAME"]} = #${colume["COLUMN_NAME"]?lower_case}#</isNotEmpty>
+        <#if colume["COLUMN_NAME"]?lower_case != "XT_ZXBZ"?lower_case >
+            <isNotEmpty prepend="AND" property="${colume["COLUMN_NAME"]?lower_case}"> ${colume["COLUMN_NAME"]} = #${colume["COLUMN_NAME"]?lower_case}#</isNotEmpty>
+        </#if>
     </#list>
     </select>
 
@@ -54,7 +62,9 @@
     <select id="queryPageCount" parameterClass="Map" resultClass="Integer">
         <![CDATA[ SELECT count(*) FROM ${tableName} WHERE XT_ZXBZ = '0' ]]>
     <#list columus as colume>
-        <isNotEmpty prepend="AND" property="entity.${colume["COLUMN_NAME"]?lower_case}"> ${colume["COLUMN_NAME"]} = #entity.${colume["COLUMN_NAME"]?lower_case}#</isNotEmpty>
+        <#if colume["COLUMN_NAME"]?lower_case != "XT_ZXBZ"?lower_case >
+            <isNotEmpty prepend="AND" property="entity.${colume["COLUMN_NAME"]?lower_case}"> ${colume["COLUMN_NAME"]} = #entity.${colume["COLUMN_NAME"]?lower_case}#</isNotEmpty>
+        </#if>
     </#list>
     </select>
 
@@ -64,7 +74,9 @@
         SELECT a.* , rownum r FROM (
         SELECT *  FROM ${tableName} WHERE XT_ZXBZ = '0']]>
     <#list columus as colume>
-        <isNotEmpty prepend="AND" property="entity.${colume["COLUMN_NAME"]?lower_case}"> ${colume["COLUMN_NAME"]} = #entity.${colume["COLUMN_NAME"]?lower_case}#</isNotEmpty>
+        <#if colume["COLUMN_NAME"]?lower_case != "XT_ZXBZ"?lower_case >
+            <isNotEmpty prepend="AND" property="entity.${colume["COLUMN_NAME"]?lower_case}"> ${colume["COLUMN_NAME"]} = #entity.${colume["COLUMN_NAME"]?lower_case}#</isNotEmpty>
+        </#if>
     </#list>
         <![CDATA[ order by $sort$ $order$  ) a
         WHERE ROWNUM <= #end# ) t
