@@ -28,4 +28,20 @@ public class ${entityName} extends BaseEntity implements Serializable {
         </#if>
     </#list>
 
+    @Override
+    public String toString() {
+        return "${entityName}{" +
+        <#list columus as colume>
+            <#if colume_index !=0 >
+                "," +
+            </#if>
+            <#if colume["COLUMN_NAME"]?lower_case?starts_with("xt_")>
+                "\"${colume["COLUMN_NAME"]?lower_case}\" : \"" + get${colume["COLUMN_NAME"]?lower_case?cap_first}() + "\"" +
+            <#else>
+                "\"${colume["COLUMN_NAME"]?lower_case}\" : \"" + ${colume["COLUMN_NAME"]?lower_case} + "\"" +
+            </#if>
+        </#list>
+        '}';
+    }
+
 }
