@@ -5,6 +5,7 @@ import com.founder.framework.annotation.MethodAnnotation;
 import com.founder.framework.annotation.MethodAnnotation.logType;
 import com.founder.framework.base.service.BaseService;
 import com.founder.framework.utils.EasyUIPage;
+import com.founder.framework.utils.UUID;
 import com.founder.model.${entityName};
 import com.founder.service.${entityName}Service;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class ${entityName}ServiceImpl extends BaseService implements ${entityNam
     */
     @MethodAnnotation(value = "新增", type = logType.insert)
     public void insert(${entityName} entity){
+        entity.set${pk?lower_case?cap_first}(UUID.create());
         ${entityName?uncap_first}Dao.insert(entity);
     }
 
