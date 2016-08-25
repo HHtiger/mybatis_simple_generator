@@ -1,0 +1,6 @@
+- !!com.founder.yaml.anjian.model.RelationConfig
+  stClasses: [com.founder.anjian.autoEntry.st.service.TbStSawpService, com.founder.anjian.autoEntry.st.service.TbStWpService]
+  xwPackage: com.founder.anjian.autoEntry.xw.dsqz
+- !!com.founder.yaml.anjian.model.RelationConfig
+  stClasses: [com.founder.anjian.autoEntry.st.service.TbStSawpService, com.founder.anjian.autoEntry.st.service.TbStWpService]
+  xwPackage: com.founder.anjian.autoEntry.xw.dsdy

@@ -1,0 +1,27 @@
+!!com.founder.yaml.anjian.model.DataRelation
+data_from_tables:
+- data_from_tables:
+  - data_from_tables:
+    - data_from_tables: []
+      root_table_name: TB_XW_KYDY
+    - data_from_tables: []
+      root_table_name: TB_XW_DSDY
+    - data_from_tables: []
+      root_table_name: TB_XW_SSDY
+    - data_from_tables: []
+      root_table_name: TB_XW_FXKYDY
+    root_table_name: TB_ST_WP_DY
+  - data_from_tables:
+    - data_from_tables: []
+      root_table_name: TB_XW_KYQZ
+    - data_from_tables: []
+      root_table_name: TB_XW_DSQZ
+    - data_from_tables: []
+      root_table_name: TB_XW_SSQZ
+    - data_from_tables: []
+      root_table_name: TB_XW_FXZASYQZ
+    - data_from_tables: []
+      root_table_name: TB_XW_FXKYQZ
+    root_table_name: TB_ST_WP_QZ
+  root_table_name: TB_ST_SAWP
+root_table_name: TB_ST_WP
